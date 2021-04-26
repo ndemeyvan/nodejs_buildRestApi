@@ -1,9 +1,16 @@
 const express = require("express");
 const Joi = require("joi");
 const app = express();
+const logger = require('./logger');
+const authenticate = require('./authenticate');
+
 app.use(express.json());
 
 const port = process.env.PORT || 3000;
+
+app.use(logger)
+
+app.use(authenticate)
 
 const courses = [
   { id: 1, name: "Anglais" },
