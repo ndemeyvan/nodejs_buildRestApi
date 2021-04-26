@@ -2,6 +2,7 @@ const express = require("express");
 const Joi = require("joi");
 const router = express.Router();
 
+
 const courses = [
   { id: 1, name: "Anglais" },
   { id: 2, name: "Francais" },
@@ -13,7 +14,7 @@ router.get("/", (req, res) => {
   res.json(courses);
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res) => { 
   const course = courses.find((item) => item.id === parseInt(req.params.id));
   if (!course) {
     res.status(404).send("Id not found");
