@@ -1,9 +1,9 @@
 const express = require("express");
-const Joi = require("joi");
 const app = express();
 const logger = require("./middleware/logger");
 const authenticate = require("./middleware/authenticate");
 const courses = require("./routes/courses");
+
 app.use(express.json());
 
 app.use(logger);
