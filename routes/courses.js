@@ -1,65 +1,54 @@
 const express = require("express");
 const Joi = require("joi");
+const { Course } = require("../models/course");
 const router = express.Router();
 
 
-const courses = [
-  { id: 1, name: "Anglais" },
-  { id: 2, name: "Francais" },
-  { id: 3, name: "Italien" },
-];
-
-
-router.get("/", (req, res) => {
-  res.json(courses);
+router.get("/",async (req, res) => {
+  const course = await Course.find()
+    .limit(5)
+    .sort({ date: 1 });
+  res.json(course);
 });
 
-router.get("/:id", (req, res) => { 
-  const course = courses.find((item) => item.id === parseInt(req.params.id));
-  if (!course) {
-    res.status(404).send("Id not found");
-  } else {
-    res.json(course);
+router.get("/:id", async (req, res) => {
+  const course = await Course.findById(id)
+  res.json(course);
+});
+
+router.post("/", async (req, res) => {
+  const course = new Course({
+    name: req.body.name,
+    category: req.body.category,
+    author: req.body.author,
+    tags: req.body.tags,
+    isPublished: req.body.isPublished,
+  });
+
+  try {
+    const result = await course.save();
+    console.log(result);
+  } catch (e) {
+    console.log(e.message);
   }
 });
 
-router.post("/", (req, res) => {
-  if (checkIsCorrect(req.body).error) {
-    res.status(400).json(result.error);
-  } else {
-    const course = {
-      id: courses.length + 1,
+router.put("/:id", async (req, res) => {
+  const course = await Course.findByIdAndUpdate(id,{
+    
       name: req.body.name,
-    };
-    courses.push(course);
-    res.json(course);
-  }
+      category: req.body.category,
+      author: req.body.author,
+      tags: req.body.tags,
+      isPublished: req.body.isPublished,
+    
+  })
+  res.json(course);
 });
 
-router.put("/:id", (req, res) => {
-  const course = courses.find((item) => item.id === parseInt(req.params.id));
-  if (!course) {
-    res.status(404).send("Id not found");
-    return;
-  }
-
-  if (checkIsCorrect(req.body).error) {
-    res.status(400).json(result.error);
-    return;
-  }
-  course.name = req.body.name;
-  res.send(course);
-});
-
-router.delete("/:id", (req, res) => {
-  const course = courses.find((item) => item.id === parseInt(req.params.id));
-  if (!course) {
-    res.status(404).send("Id not found");
-    return;
-  }
-  const index = courses.indexOf(course);
-  courses.splice(index, 1);
-  res.send(courses);
+router.delete("/:id",async (req, res) => {
+  const course = await Course.findByIdAndDelete(id)
+  res.json(course);
 });
 
 function checkIsCorrect(course) {
